@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <include name="manifests/upstream/grapheneos-2026081300.xml" />
+  <include name="manifests/common/sable.xml" />
+  <include name="manifests/devices/panther.xml" />
+</manifest>
