@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="sableos" fetch="https://github.com/sableos-project/" />
+
+  <project
+      name="packages_apps_SableStart"
+      path="packages/apps/SableStart"
+      remote="sableos"
+      revision="059d5d23e4186bbd3119180433a5e6206b7d95bd" />
+</manifest>
