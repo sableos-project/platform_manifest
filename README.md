@@ -10,6 +10,12 @@ The primary development reference is Google Pixel 7 (`panther`) on the validated
 
 The repository is being bootstrapped while the existing Panther Sable Start source migration/build/reconstruction gates close. No manifest here should yet be described as reproducing the validated Panther build until the multi-repository migration and clean reconstruction gate pass.
 
+The current R5-R3 audit found that the repository still contains policy/documentation only and does not yet contain an operational `default.xml`/common/device/release manifest hierarchy. The exact audit result and reconstruction acceptance plan are recorded in:
+
+- [`docs/R5_R3_RECONSTRUCTION_PLAN.md`](docs/R5_R3_RECONSTRUCTION_PLAN.md)
+
+Manifest integration is therefore the next composition change after the read-only historical-workspace audit establishes the current upstream/local-manifest/path-collision state.
+
 ## Repository roles
 
 - `platform_manifest`: exact revisions composing a build.
@@ -40,5 +46,6 @@ See:
 - [`docs/MANIFEST_HIERARCHY.md`](docs/MANIFEST_HIERARCHY.md)
 - [`docs/RELEASE_MANIFEST_POLICY.md`](docs/RELEASE_MANIFEST_POLICY.md)
 - [`docs/DEVELOPMENT_MILESTONE_COMPOSITION.md`](docs/DEVELOPMENT_MILESTONE_COMPOSITION.md)
+- [`docs/R5_R3_RECONSTRUCTION_PLAN.md`](docs/R5_R3_RECONSTRUCTION_PLAN.md)
 
 The manifest should encode decided architecture. If a new Sable repository, default application, shared service, or device-specific source project is needed, document its ownership before introducing it into source composition.
