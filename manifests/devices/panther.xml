@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <!--
+    R5-R3 does not yet require an additional Sable-owned Panther-specific
+    project. Panther platform/device support is supplied by the pinned
+    GrapheneOS 2026081300 substrate.
+  -->
+</manifest>
