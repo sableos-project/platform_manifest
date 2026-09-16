@@ -1,272 +1,192 @@
 # Development milestone source-composition requirements
 
-Status: **normative source-composition policy for the R5–R10+ development train.**
+Status: **normative source/input composition policy for the current development train.**
 
-`platform_manifest` is the authoritative place to describe which repositories/revisions form a complete SableOS source composition. A milestone is not reproducible merely because the relevant component commit exists somewhere on GitHub.
+`platform_manifest` is the authority for the Android/Sable source composition of an OS build. The current R8 architecture additionally permits exact externally qualified application artifacts; those inputs must be bound by explicit release/build provenance rather than hidden as local files.
 
-This document complements `MANIFEST_HIERARCHY.md`, `SOURCE_COMPOSITION_MODEL.md`, and `RELEASE_MANIFEST_POLICY.md`.
+Historical Git history preserves the earlier detailed R5–R10 composition document.
 
 ## 1. Core rule
 
-A complete build claim must be reconstructable from explicit source-composition data.
+A complete build claim must be reconstructable from explicit inputs.
 
 Do not depend on:
 
 - manually copied source trees;
 - host-only symlinks;
-- ad hoc local manifest entries that are not captured in the project composition;
+- untracked local manifests;
 - uncommitted workspace files;
-- branch tips that can move without an exact recorded revision;
-- device repositories containing copied common application source.
+- branch tips without resolved commits;
+- device repositories containing copied common app source;
+- opaque APKs copied into the tree without source/workflow/hash provenance.
 
-Development may temporarily use a bounded migration mechanism to prove source equivalence, but the migration is not complete until normal manifest composition can reconstruct the intended tree.
+## 2. Complete input identity
 
-## 2. Development milestone labels versus manifests
-
-`R5`, `R6`, `R7`, `R8`, `R9`, and `R10+` are development milestones, not source manifest version numbers.
-
-For a milestone closure, record:
-
-- exact manifest repository commit;
-- exact relevant Sable component commits;
-- exact upstream/substrate manifest/tag/revision;
-- target device/product/release/variant;
-- any allowed local manifest fragment, preferably checked into an appropriate project repository rather than remaining host-private;
-- vendor/BSP inputs that are not represented as normal Git projects;
-- resulting artifact hashes.
-
-A public/semantic SableOS release should use an immutable revision-pinned manifest according to `RELEASE_MANIFEST_POLICY.md`.
-
-## 3. R5 — migration/reconstruction closure
-
-R5 exists to cross the boundary from historically validated local workspace source to canonical organization repositories.
-
-For Sable Start, R5 must establish:
-
-```text
-sableos-project/packages_apps_SableStart
-  -> exact validated source commit
-  -> manifest project at packages/apps/SableStart
-  -> successful build from reconstructed checkout
-```
-
-Current sealed migration source identity:
-
-```text
-commit 059d5d23e4186bbd3119180433a5e6206b7d95bd
-tree   c00fd741c401fdd1421e8971bfb82f01c4b7c7da
-```
-
-The final manifest must not require the historical authoritative workspace copy to remain present merely to build Sable Start.
-
-### 3.1 R5 manifest requirements
-
-Before R5 reconstruction closure:
-
-- define the canonical manifest project name/path for `packages_apps_SableStart`;
-- pin/refer to the accepted commit according to development/release manifest policy;
-- ensure no duplicate project also populates `packages/apps/SableStart`;
-- ensure no local symlink substitutes a different tree;
-- ensure `repo sync`/checkout semantics place the repository at the expected Android path;
-- capture exact upstream substrate composition used around it;
-- perform a fresh or sufficiently isolated reconstruction build gate that proves the manifest source is actually consumed.
-
-### 3.2 Migration PR timing
-
-A source migration PR may remain open while build/reconstruction is being proven. Do not rewrite a sealed source commit solely to absorb unrelated documentation changes when the merge model can preserve the source identity.
-
-Once accepted, the exact merged/reachable source identity and manifest revision must be recorded.
-
-## 4. R6 — Sable Start functional milestone
-
-R6 modifies `packages_apps_SableStart` after migration closure.
-
-Source-composition requirements:
-
-- R6 feature commits belong in the canonical Sable Start repository, not only the Panther workspace;
-- Panther/device repositories must not receive a forked launcher copy;
-- exact R6 validation should record Sable Start commit and complete manifest identity;
-- if R6 requires no new common platform/vendor/device source, do not create artificial cross-repository changes;
-- if a shared Android adapter is genuinely required, place it in the documented owning common repository and pin both changes together for validation.
-
-R6 runtime fixture applications (for example user-installed Maps/Weather) are not necessarily manifest projects/product defaults and must not be added to the product manifest merely because they were used for testing.
-
-## 5. R7 — daily-driver composition
-
-R7 is the point at which default application/product composition becomes explicit.
-
-The manifest/product combination must make it possible to identify the selected source implementation for baseline apps that are source-built as part of SableOS.
-
-For each source-built default app, record:
-
-- repository/project name;
-- checkout path;
-- exact revision;
-- upstream provenance;
-- product inclusion owner (`vendor_sable` or appropriate product definition);
-- device-specific exception, if any.
-
-For a prebuilt/proprietary/vendor-supplied component, do not invent a Git revision. Record the actual provenance/version/hash through the appropriate vendor/provenance mechanism.
-
-### 5.1 No blanket upstream assumption
-
-Do not model R7 as "AOSP apps" or "Graphene apps" globally unless every relevant component actually follows that rule and the product documentation intentionally chooses it.
-
-Phone, Messaging, Browser, Camera, Files, Clock, Calculator, etc. can have different upstream/ownership decisions.
-
-## 6. R8 — common Sable design/customization source
-
-R8 common design/theme contracts belong in `platform_sable` or another intentionally created common Sable project if the architecture evolves.
-
-Manifest rules:
-
-- one canonical source project for the common contract;
-- application repositories consume it through the normal Android build dependency model;
-- no per-device copy of shared design source;
-- no local host overlay used as the canonical theme source;
-- R8 validation pins both the common contract and consuming Sable application revisions.
-
-If Sable customization persistence requires a new common service/package, it needs its own documented source ownership/project path before manifest integration.
-
-## 7. R9 — new Sable application repositories
-
-The first intended native utility is Sable Calculator.
-
-Before adding a new Sable app to the manifest/product:
-
-1. create/identify its canonical repository;
-2. document package name and Android checkout path;
-3. document build module name;
-4. establish license and source ownership;
-5. establish the initial source commit;
-6. add the manifest project at a non-conflicting path;
-7. add product inclusion only after the app's own build gate is ready;
-8. pin the exact revision for milestone/release validation.
-
-Suggested naming should remain consistent with existing Android repository conventions, e.g. a future canonical repository may follow a `packages_apps_<Name>` pattern, but the exact repository must be intentionally created rather than assumed by code/scripts before it exists.
-
-Do not store Calculator source in `platform_sable`, `vendor_sable`, or `device_sable_panther` merely to avoid creating the proper repository.
-
-## 8. R10+ — application replacement
-
-Replacing an inherited application affects composition and often product roles/privileges.
-
-A replacement manifest/product change should explicitly model:
-
-```text
-old source/package inclusion
-new source/package inclusion
-role/default-handler transition
-permission/allowlist transition
-data migration compatibility
-rollback revision
-```
-
-Do not delete the old source reference and its rollback knowledge before the new application is qualified.
-
-Historical release manifests remain immutable evidence even if the current product no longer uses the component.
-
-## 9. Complete build identity
-
-For milestone evidence, record at least:
+A validated build records as applicable:
 
 ```text
 platform_manifest commit
-upstream/default manifest identity
-Sable project commit(s)
-target product
-release
-build variant
-OUT_DIR/build configuration where relevant
-artifact hashes
+upstream/substrate manifest/tag/revisions
+Sable source-project commits
+target device/product/release/variant
+vendor/BSP/generated inputs
+qualified external application artifact records
+build/toolchain/host identity
+resulting artifact hashes
 ```
 
-For formal release composition also record signing/update provenance and device support level.
+For release composition, also record signing/update provenance and device support level.
 
-## 10. Working branches versus exact revisions
+## 3. R5/R6 historical composition
 
-A branch name is useful for development, but branch identity alone does not close reproducibility.
+R5/R6 established the migration/reconstruction and launcher-source principles:
 
-Bad closure statement:
+- canonical SableStart source belongs in `packages_apps_SableStart`;
+- no manual historical workspace copy is accepted as final composition;
+- common launcher source must not be duplicated into a device repository;
+- branch identity alone does not close reproducibility;
+- manifest path collisions/overrides must be deliberate.
+
+`R5_R3_RECONSTRUCTION_PLAN.md` remains preserved historical reconstruction guidance. Do not treat it as the current R8 roadmap.
+
+## 4. R7 composition baseline
+
+R7 makes product/default application and device build inputs explicit.
+
+For source-built components record repository/path/revision/product owner. For vendor/prebuilt components record their actual provenance/hash rather than inventing a Git identity.
+
+R7 product/build evidence reinforced that module discovery, install rules, product selection, PRODUCT_OUT, target-files/image membership and runtime are different claims.
+
+## 5. R8 composition — ACTIVE
+
+R8 is a consolidated application train:
 
 ```text
-built from main
+R8-A shared design/test foundation
+R8-B Calculator + Convert
+R8-C Games
+R8-D Reader publication path
+R8-D2 Reader text/accessibility path
+R8-E Media
 ```
 
-Better:
+### 5.1 Source workstreams
+
+Shared platform/design contracts belong in `platform_sable`.
+
+Substantial application implementation belongs in an application-owned source repository/workspace once the boundary is stable. Do not place complete app implementations in `platform_sable`, `vendor_sable` or `device_sable_panther` merely to avoid creating/choosing the right owner.
+
+### 5.2 Standalone-qualified application inputs
+
+R8 application development may remain Cargo/Gradle/upstream-build owned until product integration.
+
+Before an APK becomes an R8 product input, its freeze record must bind at least:
 
 ```text
-platform_manifest=<sha>
-packages_apps_SableStart=<sha>
-platform_sable=<sha>
-vendor_sable=<sha>
-device_sable_panther=<sha>
-upstream_manifest/tag=<exact identity>
+source repo + commit
+upstream/reuse repo + commit where applicable
+qualification workflow/run
+dependency/toolchain identity
+package/application ID + version
+APK SHA-256
+permissions/exported components
+native ABI/library inventory
+accepted feature-policy boundary
 ```
 
-When a build uses a branch, resolve and record its exact commit at build time.
+The product build consumes the exact frozen input or explicitly records why/how it transforms it.
 
-## 11. Local manifests
+### 5.3 Reader inputs
 
-Local manifests are acceptable as bounded development tools only when their role is explicit.
+Current initial qualification pins:
 
-Rules:
+```text
+vaachak-platform/vaachak-mobile
+  5393503ec0695e87e0a9bc4567fec0fea110ea4d
+
+vaachak-platform/vaachak-textreader
+  50fca365baae9869264716569830690fb62029a7
+```
+
+These are separate provenance sources for one intended Sable Reader product. Do not model them as two required Sable Reader launcher applications merely because qualification occurs independently.
+
+### 5.4 Product integration owner
+
+`vendor_sable` owns common product selection/import of accepted applications. `device_sable_<target>` owns only actual target-specific adaptation.
+
+Generated upstream/vendor product files remain substrate inputs and do not become the owner of Sable package policy.
+
+### 5.5 Import mechanism
+
+The exact Android 17 / GrapheneOS prebuilt application mechanism must be proven in the target tree. `android_app_import` is a candidate, not an assumed manifest/source rule.
+
+The selected mechanism must make product provenance auditable:
+
+```text
+sealed APK
+ -> Sable product module/import
+ -> product selection
+ -> PRODUCT_OUT
+ -> target-files/image
+```
+
+## 6. R8 integration freeze
+
+The manifest/build provenance record for the R8 image identifies the exact selected source projects **and** exact selected standalone application artifacts.
+
+A workstream may be explicitly deferred. The freeze records what is actually included, not what the roadmap once hoped would be included.
+
+Changing a frozen APK/source commit reopens the affected integration evidence.
+
+## 7. Builder/source-root transition
+
+The next R8 Panther image is planned on `ai-g732` after the storage/build migration gate passes.
+
+The source composition must not depend on old ThinkPad absolute paths, manually copied outputs or hidden local-manifest state. The new host should reconstruct/check out from recorded composition plus the recorded external artifact freeze.
+
+## 8. R9+
+
+R9 is the next coherent productivity/application tranche, not the first Calculator milestone. New application/source repositories or artifact inputs follow the same ownership/provenance pattern as R8.
+
+## 9. Release/source model
+
+Development refs may point at active branches, but validation resolves exact commits. Validated/release manifests pin exact revisions and bind any qualified external inputs by exact hash/provenance.
+
+A branch name is never a complete release identity.
+
+## 10. Local manifests
+
+Local manifests are bounded development tools only.
 
 - inspect them during evidence gates;
-- do not let an unknown local manifest silently override a canonical project path;
-- promote required composition into version-controlled Sable manifest data before claiming clean reconstruction;
-- capture hashes/contents if a temporary local manifest is part of a specific validation run;
-- do not treat host-private local manifest state as a release manifest.
+- prevent accidental path ownership collisions;
+- promote required composition into version control before a reconstruction/release claim;
+- record temporary local-manifest contents/hashes when they materially affect a validation run.
 
-## 12. Path ownership collisions
+## 11. Path ownership collisions
 
-Before introducing a Sable project, verify that no upstream project already owns the same checkout path in the active composition.
+Before adding/replacing a project, verify the active upstream composition does not already own the target checkout path. Use deliberate manifest replacement/override semantics, not sync order.
 
-For replacements/overrides, use deliberate manifest semantics and document why the replacement is necessary.
+## 12. Device expansion
 
-Do not rely on sync order to decide which repository wins a path collision.
+Future devices reuse common Sable application/platform source and qualified artifacts where technically valid. Device repos are adapters, not app forks.
 
-## 13. Device expansion
+## 13. Reconstruction gate
 
-Future devices such as Bramble or other targets should compose the same common Sable app/platform repositories where semantically compatible.
+A strong reconstruction proves:
 
-A new device should add a bounded `device_sable_*` adapter/project and any truly device-specific vendor inputs, not duplicate the Sable Start/Calculator/common-theme repositories.
+1. documented clean/isolated source root;
+2. exact intended manifest revision;
+3. exact source project revisions;
+4. no unexpected local-manifest/path override;
+5. exact qualified external artifact inputs available and hash-verified;
+6. target/product configuration resolved;
+7. build executes under documented network/tool/storage policy;
+8. outputs and hashes recorded;
+9. runtime/device evidence binds back to the exact resulting image when that claim is in scope.
 
-A common Sable product release may pin different upstream substrate/device revisions per target while retaining common Sable component versions where valid.
+## 14. Documentation-before-composition
 
-## 14. Reconstruction gate
+If a new repo, service, application ownership model, default-app replacement or external artifact class is not covered by current architecture, document it before encoding it in the manifest/product tree.
 
-A strong reconstruction gate should prove:
-
-1. start from a documented clean/new source root or equivalently isolated checkout state;
-2. use the intended manifest source/revision;
-3. sync/checkout the required repositories without manual source copying;
-4. verify project paths/revisions;
-5. verify no unexpected local-manifest/path override;
-6. build the target/module/image according to the milestone claim;
-7. hash outputs;
-8. record exact source identities;
-9. compare expected behavior/artifacts where applicable.
-
-A successful build from a historical workspace that still contains manually migrated source does not by itself close this gate.
-
-## 15. Documentation-before-composition rule
-
-If a new repository, default application, shared service, or device-specific source project is required but not covered by the current architecture, document ownership and purpose before adding it to the manifest.
-
-The manifest should encode decided architecture, not become the place where architecture is accidentally invented.
-
-## 16. Milestone composition checklist
-
-Before closing any R6+ milestone, answer:
-
-- Which exact complete manifest/source composition produced the tested build?
-- Which Sable repositories changed for the milestone?
-- Are those changes in their canonical repositories?
-- Are any source paths supplied by manual copies/symlinks/local host state?
-- Are default applications represented accurately as source-built, prebuilt, or user-installed/test fixtures?
-- Can another clean checkout identify the same revisions?
-- Are device-specific differences bounded to device/vendor projects?
-- Does the artifact/evidence bind back to these exact revisions?
-
-If those questions cannot be answered from version-controlled data and evidence, the composition claim is not closed.
+Composition records decided architecture; they must not silently create it.

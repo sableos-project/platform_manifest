@@ -1,27 +1,81 @@
 # Manifest and release provenance policy
 
-SableOS distinguishes moving development state from validated source compositions.
+Status: **normative release-input provenance policy.**
+
+SableOS distinguishes moving development state from validated/release input compositions.
 
 ## Development
 
-Development manifests may reference active branches while work is in progress. Their purpose is convenience and integration, not archival reproducibility.
+Development manifests may reference active branches while work is in progress. Every validation/build record still resolves the actual revisions it consumed.
 
-## Validated build manifests
+Development application qualification may happen outside the Android source manifest. That is allowed only when the resulting product input is later represented by an exact artifact/source provenance record.
 
-A validated build manifest must pin exact revisions for every Sable-owned project and must bind the upstream Android release/tag used as the substrate. It must also reference the device profile and corresponding validation record.
+## Validated build composition
+
+A validated build composition binds:
+
+```text
+exact upstream/substrate identity
+exact Sable source-project revisions
+exact target device/product/release/variant
+vendor/BSP/generated input identity
+exact qualified external application artifact inputs, if any
+build/toolchain/host identity
+resulting artifact hashes
+validation record
+```
+
+A source manifest alone is not a complete build-input identity when externally qualified APKs are consumed.
+
+## Qualified application artifact record
+
+For every standalone-built application accepted into a validated/release build, bind at least:
+
+```text
+source repository + exact commit
+upstream/reuse source + exact commit where applicable
+qualification workflow/run
+build variant/toolchain/dependency identity
+application/package ID + version
+APK SHA-256
+permissions/exported components
+native ABI/library inventory
+product module/import + install path
+signing or build-time transformation behavior
+```
+
+The exact storage format for this metadata may evolve, but it must be immutable/reviewable with the validated build definition.
 
 ## Release manifests
 
-A release manifest must be immutable after publication. Corrections require a new manifest identity rather than rewriting an existing validated release definition.
+A release manifest/provenance definition is immutable after publication. Corrections produce a new release identity rather than rewriting an existing validated definition.
 
-## Branches, tags, and manifests
+Historical input records remain available even after a source repo/app is replaced in later releases.
 
-- branches represent ongoing development;
-- signed or otherwise protected tags identify component milestones;
-- revision-pinned manifests identify complete OS source compositions.
+## Branches, tags, manifests and artifacts
 
-The manifest is the authoritative answer to: which exact commits made this build?
+- branches represent moving development;
+- protected/signed tags may identify component milestones;
+- revision-pinned manifests identify complete OS source compositions;
+- sealed artifact records identify exact external build inputs;
+- release records bind the source composition and artifact inputs to final signed outputs.
 
-## Current bootstrap state
+A branch name, package name or filename alone is never sufficient release provenance.
 
-The organization repositories were created on 2026-09-11 while the Panther Sable Start R3 compile/type-check gate was still in progress. The first validated Panther manifest will be created only after current source capture, repository migration, and clean reconstruction have all passed.
+## Build-host transition
+
+The next R8 Panther integration image is intended for `ai-g732` after its storage/source/toolchain migration is sealed. The host transition does not change source ownership; it is part of the build-environment identity recorded with the validated output.
+
+Do not carry host-private ThinkPad paths/local copies into release provenance.
+
+## Current bootstrap/history note
+
+The organization was originally bootstrapped during R3/R5 SableStart migration/reconstruction work. Those historical plans/evidence remain audit records, but the current R8 release-input model includes independently qualified application artifacts in addition to revision-pinned OS source.
+
+## Governing question
+
+The complete release provenance must answer:
+
+> Which exact source revisions, qualified external inputs, build environment, product target and signing identity produced this exact released artifact?
+
+If that cannot be answered without consulting an untracked developer workspace, the release provenance is incomplete.
