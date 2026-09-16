@@ -2,64 +2,45 @@
 
 Status: **normative source/input composition policy for the current development train.**
 
-`platform_manifest` is the authority for the Android/Sable source composition of an OS build. The current R8 architecture additionally permits exact externally qualified application artifacts; those inputs must be bound by explicit release/build provenance rather than hidden as local files.
+`platform_manifest` is the authority for Android/Sable source composition. R8 additionally permits trusted externally built application artifacts; those inputs must be bound by explicit provenance rather than hidden as local files.
 
-Historical Git history preserves the earlier detailed R5–R10 composition document.
+Historical Git history preserves earlier R5–R10 composition detail.
 
 ## 1. Core rule
 
 A complete build claim must be reconstructable from explicit inputs.
 
-Do not depend on:
-
-- manually copied source trees;
-- host-only symlinks;
-- untracked local manifests;
-- uncommitted workspace files;
-- branch tips without resolved commits;
-- device repositories containing copied common app source;
-- opaque APKs copied into the tree without source/workflow/hash provenance.
+Do not depend on manually copied source trees, host-only symlinks, untracked local manifests, uncommitted workspace files, unresolved branch tips, device repos containing copied common app source, or opaque APKs without source/toolchain/hash provenance.
 
 ## 2. Complete input identity
 
-A validated build records as applicable:
+A validated development build records as applicable:
 
 ```text
 platform_manifest commit
-upstream/substrate manifest/tag/revisions
+upstream/substrate revisions
 Sable source-project commits
 target device/product/release/variant
 vendor/BSP/generated inputs
-qualified external application artifact records
+trusted external application artifact records
 build/toolchain/host identity
+isolated target OUT_DIR identity
 resulting artifact hashes
 ```
 
-For release composition, also record signing/update provenance and device support level.
+Formal release composition later adds production signing/update provenance and support level.
 
 ## 3. R5/R6 historical composition
 
-R5/R6 established the migration/reconstruction and launcher-source principles:
+R5/R6 established canonical SableStart ownership, no manual historical-workspace dependency, no common-launcher duplication into device repos, exact revision requirements and deliberate manifest path ownership.
 
-- canonical SableStart source belongs in `packages_apps_SableStart`;
-- no manual historical workspace copy is accepted as final composition;
-- common launcher source must not be duplicated into a device repository;
-- branch identity alone does not close reproducibility;
-- manifest path collisions/overrides must be deliberate.
-
-`R5_R3_RECONSTRUCTION_PLAN.md` remains preserved historical reconstruction guidance. Do not treat it as the current R8 roadmap.
+`R5_R3_RECONSTRUCTION_PLAN.md` remains historical guidance, not the current R8 roadmap.
 
 ## 4. R7 composition baseline
 
-R7 makes product/default application and device build inputs explicit.
-
-For source-built components record repository/path/revision/product owner. For vendor/prebuilt components record their actual provenance/hash rather than inventing a Git identity.
-
-R7 product/build evidence reinforced that module discovery, install rules, product selection, PRODUCT_OUT, target-files/image membership and runtime are different claims.
+R7 makes default-app/device build inputs explicit and reinforced that module discovery, install rules, product selection, PRODUCT_OUT, target-files/image membership and runtime are different claims.
 
 ## 5. R8 composition — ACTIVE
-
-R8 is a consolidated application train:
 
 ```text
 R8-A shared design/test foundation
@@ -70,31 +51,31 @@ R8-D2 Reader text/accessibility path
 R8-E Media
 ```
 
-### 5.1 Source workstreams
+### 5.1 A1 qualification
 
-Shared platform/design contracts belong in `platform_sable`.
+R8 application development may remain Cargo/Gradle/upstream-build owned. A1 qualification records source/upstream pins, workflow/dependency state, package/manifest state and qualification artifacts but does not by itself define the trusted product input.
 
-Substantial application implementation belongs in an application-owned source repository/workspace once the boundary is stable. Do not place complete app implementations in `platform_sable`, `vendor_sable` or `device_sable_panther` merely to avoid creating/choosing the right owner.
+### 5.2 A2 trusted external application input
 
-### 5.2 Standalone-qualified application inputs
+Before an APK becomes an R8 product input, `ai-g732` produces the trusted standalone artifact from exact accepted source.
 
-R8 application development may remain Cargo/Gradle/upstream-build owned until product integration.
-
-Before an APK becomes an R8 product input, its freeze record must bind at least:
+Its freeze record binds at least:
 
 ```text
-source repo + commit
-upstream/reuse repo + commit where applicable
-qualification workflow/run
-dependency/toolchain identity
+source repo + exact commit
+upstream/reuse repo + exact commit where applicable
+trusted A2 build/toolchain identity
 package/application ID + version
-APK SHA-256
+trusted APK SHA-256
 permissions/exported components
-native ABI/library inventory
+classes*.dex identity
+JNI .so identity
+native ABI / 16 KiB compatibility
+dependency/provenance inventory
 accepted feature-policy boundary
 ```
 
-The product build consumes the exact frozen input or explicitly records why/how it transforms it.
+The product build consumes this exact trusted input or explicitly records the intentional transformation.
 
 ### 5.3 Reader inputs
 
@@ -108,85 +89,88 @@ vaachak-platform/vaachak-textreader
   50fca365baae9869264716569830690fb62029a7
 ```
 
-These are separate provenance sources for one intended Sable Reader product. Do not model them as two required Sable Reader launcher applications merely because qualification occurs independently.
+These are provenance sources for one intended Sable Reader product, not two required launcher apps.
 
 ### 5.4 Product integration owner
 
-`vendor_sable` owns common product selection/import of accepted applications. `device_sable_<target>` owns only actual target-specific adaptation.
+`vendor_sable` owns common imported-module definitions and common product selection of accepted applications. `device_sable_<target>` owns only actual target-specific adaptation.
 
 Generated upstream/vendor product files remain substrate inputs and do not become the owner of Sable package policy.
 
-### 5.5 Import mechanism
+### 5.5 B1 import mechanism
 
-The exact Android 17 / GrapheneOS prebuilt application mechanism must be proven in the target tree. `android_app_import` is a candidate, not an assumed manifest/source rule.
+The exact Android 17 / GrapheneOS prebuilt mechanism must be proven in the target tree. `android_app_import` is preferred but not assumed.
 
-The selected mechanism must make product provenance auditable:
+The selected mechanism must make provenance auditable:
 
 ```text
-sealed APK
- -> Sable product module/import
+trusted frozen APK
+ -> Sable module/import
+ -> certificate/signing transformation
+ -> JNI/dexpreopt/uses-library behavior
  -> product selection
  -> PRODUCT_OUT
- -> target-files/image
+ -> later target-files/image/runtime
 ```
 
 ## 6. R8 integration freeze
 
-The manifest/build provenance record for the R8 image identifies the exact selected source projects **and** exact selected standalone application artifacts.
+The R8 build provenance record identifies exact selected source projects and exact A2 trusted application artifacts.
 
-A workstream may be explicitly deferred. The freeze records what is actually included, not what the roadmap once hoped would be included.
+A workstream may be explicitly deferred. Changing a frozen artifact/source commit reopens affected downstream integration evidence.
 
-Changing a frozen APK/source commit reopens the affected integration evidence.
+## 7. Panther and Titan 2 composition
 
-## 7. Builder/source-root transition
+Panther is the primary R8 development/runtime target. Titan 2 is the second R8 PORTABILITY target.
 
-The next R8 Panther image is planned on `ai-g732` after the storage/build migration gate passes.
+Where technically compatible both should consume:
 
-The source composition must not depend on old ThinkPad absolute paths, manually copied outputs or hidden local-manifest state. The new host should reconstruct/check out from recorded composition plus the recorded external artifact freeze.
+```text
+same trusted common R8 application artifacts
+same common vendor_sable product composition
+separate target-specific adapter source
+separate target OUT_DIR / build evidence
+```
 
-## 8. R9+
+A Titan-specific keyboard/layout/BSP adapter does not justify a common application fork.
 
-R9 is the next coherent productivity/application tranche, not the first Calculator milestone. New application/source repositories or artifact inputs follow the same ownership/provenance pattern as R8.
+## 8. Builder/source-root transition
 
-## 9. Release/source model
+A2/B1/B2/B3 are planned on `ai-g732` after storage/build migration passes.
 
-Development refs may point at active branches, but validation resolves exact commits. Validated/release manifests pin exact revisions and bind any qualified external inputs by exact hash/provenance.
+Composition must not depend on old ThinkPad absolute paths, manually copied outputs or hidden local-manifest state. The trusted builder should reconstruct/check out from recorded source composition plus the recorded trusted external artifact freeze.
 
-A branch name is never a complete release identity.
+## 9. Production signing — deferred
 
-## 10. Local manifests
+Production signing is not part of R8 development composition closure.
 
-Local manifests are bounded development tools only.
+Production app keys, AVB, OTA signing, `sign_target_files_apks`, key custody and signed-output provenance are defined later only after Panther and Titan 2 development qualification is satisfactory.
 
-- inspect them during evidence gates;
-- prevent accidental path ownership collisions;
-- promote required composition into version control before a reconstruction/release claim;
-- record temporary local-manifest contents/hashes when they materially affect a validation run.
+The ThinkPad P50 is only a future signing-host candidate. OptiPlex is not part of the current signing plan and no active `sable-signer-01` exists.
 
-## 11. Path ownership collisions
+## 10. R9+
 
-Before adding/replacing a project, verify the active upstream composition does not already own the target checkout path. Use deliberate manifest replacement/override semantics, not sync order.
+R9 is the next coherent productivity/application tranche, not first Calculator. New application/source repositories or trusted external artifacts follow the same ownership/provenance pattern.
 
-## 12. Device expansion
+## 11. Local manifests/path ownership
 
-Future devices reuse common Sable application/platform source and qualified artifacts where technically valid. Device repos are adapters, not app forks.
+Local manifests remain bounded development tools. Inspect them, prevent collisions, promote required composition into version control before reconstruction/release claims and never rely on sync order for path ownership.
 
-## 13. Reconstruction gate
+## 12. Reconstruction gate
 
 A strong reconstruction proves:
 
 1. documented clean/isolated source root;
-2. exact intended manifest revision;
-3. exact source project revisions;
-4. no unexpected local-manifest/path override;
-5. exact qualified external artifact inputs available and hash-verified;
-6. target/product configuration resolved;
-7. build executes under documented network/tool/storage policy;
-8. outputs and hashes recorded;
-9. runtime/device evidence binds back to the exact resulting image when that claim is in scope.
+2. exact intended manifest/source revisions;
+3. no unexpected local-manifest/path override;
+4. exact trusted external app inputs available/hash-verified;
+5. target/product configuration resolved;
+6. build executes under documented network/tool/storage policy;
+7. outputs/hashes recorded;
+8. runtime evidence binds back to the exact image when in scope.
 
-## 14. Documentation-before-composition
+## 13. Documentation-before-composition
 
-If a new repo, service, application ownership model, default-app replacement or external artifact class is not covered by current architecture, document it before encoding it in the manifest/product tree.
+If a new repo, service, app ownership model, default-app replacement, device adapter or external artifact class is not covered by current architecture, document it before encoding it into the manifest/product tree.
 
-Composition records decided architecture; they must not silently create it.
+Composition records decided architecture; it must not silently create it.
