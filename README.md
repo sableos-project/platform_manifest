@@ -6,6 +6,8 @@ This repository defines which exact upstream and Sable-owned revisions compose a
 
 It does not own application implementation source, product semantics or host build tooling.
 
+Organization-wide security, quality, test, coverage, supply-chain and performance policy is defined in `sableos-project/.github/docs/SECURITY_QUALITY_ENGINEERING.md`.
+
 ## Current reference targets
 
 - Google Pixel 7 (`panther`) — PRIMARY development/runtime reference.
@@ -47,20 +49,11 @@ Do not imply every shipping APK was source-built inside AOSP when the architectu
 
 - `platform_manifest` — exact OS source composition and release-input provenance.
 - application repositories/workspaces — application source/build/test ownership.
-- `platform_sable` — shared semantic/design/application architecture.
+- `platform_sable` — shared semantic/design/application/security-quality architecture.
 - `vendor_sable` — common imported modules and common app/product selection.
 - `device_sable_<target>` — bounded target-specific integration/qualification.
 - `build` — trusted application build, Android build, reconstruction and evidence tooling.
-- `.github` — organization roadmap/trust/product policy.
-
-## Current development train
-
-```text
-R5/R6  historical migration + launcher foundation
-R7     Panther product/daily-driver evidence baseline
-R8     A1/A2 application qualification + B1/B2/B3 dual-target integration
-R9+    next coherent application/productivity tranche
-```
+- `.github` — organization roadmap/trust/security-quality/product policy.
 
 ## Trusted external application provenance
 
@@ -70,11 +63,17 @@ For every A2-built application accepted into a development image record at least
 application source repository + commit
 upstream/reuse source commit where applicable
 trusted A2 build/toolchain identity
+canonical dependency/lock identity
 trusted APK SHA-256
 package/application ID + version
-permissions/components
+permissions/AppOps implications
+exported components
 DEX/JNI inner-content identities
 native ABI / 16 KiB compatibility
+security/static-analysis summary
+coverage provenance where applicable
+OWASP MASVS/MASTG evidence/exception references where applicable
+SBOM/provenance identity where available
 product import/module
 install partition/path
 Soong signing/transformation behavior
@@ -82,15 +81,41 @@ Soong signing/transformation behavior
 
 The exact metadata storage may evolve, but it cannot remain host-private or implicit.
 
+A source/security check result is not itself an artifact identity. A trusted artifact identity is not itself image/runtime proof.
+
+## Supply-chain and CI provenance
+
+Accepted build definitions should make it possible to reconstruct:
+
+```text
+source commit(s)
+dependency lock/verification state
+accepted upstream revisions
+CI/workflow revision
+pinned toolchain identities
+trusted artifact hashes
+manifest/product composition
+```
+
+Mutable branch names, caches or unpinned third-party Actions are not sufficient provenance for a trusted transition. The hardened private pipeline requires immutable action/tool references, least-privilege workflow permissions and explicit dependency provenance.
+
 ## Dual-target rule
 
 Where compatible, Panther and Titan 2 should consume the same trusted common application artifacts and common `vendor_sable` composition with isolated target OUT_DIRs and bounded device adapters.
 
 A Titan-specific display/keyboard adaptation does not justify a common application source fork.
 
+Panther runtime/performance evidence does not automatically establish Titan 2 runtime/performance behavior.
+
+## Reproducibility rule
+
+Historical successful OUT directories are evidence, not hidden reconstruction inputs.
+
+Repeatability requires fresh source/workspace/output construction from exact canonical Git/tool/dependency identities. Failed historical evidence is preserved rather than rewritten or deleted to make later results appear clean.
+
 ## Production signing
 
-Production AVB/OTA/application signing is deliberately deferred until Panther and Titan 2 development qualification is satisfactory.
+Production AVB/OTA/application signing is deliberately deferred until repeatable Panther and Titan 2 development qualification is satisfactory.
 
 The ThinkPad P50 is only a future signing-host candidate after Android building migrates to `ai-g732`. OptiPlex is not part of the current signing plan, and there is no active `sable-signer-01` yet.
 
@@ -104,9 +129,11 @@ Release provenance will later bind production signing/update identity separately
 
 - development refs may move, but every validation run resolves exact commits;
 - validated/release source composition pins exact revisions;
-- trusted external app artifacts bind exact hashes and source/toolchain provenance;
+- trusted external app artifacts bind exact hashes and source/toolchain/dependency provenance;
 - formal release definitions remain immutable evidence;
-- branch names alone are never sufficient provenance.
+- branch names alone are never sufficient provenance;
+- security/coverage/performance summaries reference the exact source/build identity they describe;
+- a planned assurance control is not represented as enforced until evidence exists.
 
 See:
 
@@ -116,4 +143,4 @@ See:
 - [`docs/DEVELOPMENT_MILESTONE_COMPOSITION.md`](docs/DEVELOPMENT_MILESTONE_COMPOSITION.md)
 - [`docs/R5_R3_RECONSTRUCTION_PLAN.md`](docs/R5_R3_RECONSTRUCTION_PLAN.md)
 
-The manifest/provenance layer encodes decided architecture. It must not invent application ownership or product behavior.
+The manifest/provenance layer encodes decided architecture. It must not invent application ownership, security exceptions or product behavior.
