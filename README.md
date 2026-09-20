@@ -1,5 +1,19 @@
 # SableOS Platform Manifest
 
+![Local CI](https://img.shields.io/badge/CI-local%20direct-active-2ea44f)
+![R9 Launcher](https://img.shields.io/badge/R9%20launcher%20visual-PASS-2ea44f)
+![Fresh Panther](https://img.shields.io/badge/fresh%20Panther%20build-IN%20PROGRESS-f0ad4e)
+![Pixel 7](https://img.shields.io/badge/Pixel%207%20physical-PENDING-lightgrey)
+![Titan 2](https://img.shields.io/badge/Titan%202-keyboard--first%20QUEUED-6f42c1)
+
+## Current R9 release state
+
+The active release train is R9. R8 established the shared application/product-composition foundation; R9 closes the Launcher3/Quickstep + Sable Start HOME architecture, proves a fresh source-bound Panther build, then moves to physical Pixel 7 acceptance before Titan 2 portability work.
+
+Canonical cross-repository status: `sableos-project/.github/docs/CURRENT_RELEASE_STATUS.md`.
+
+GitHub-hosted build CI is not the current release authority. Exact source/artifact provenance is now bound to local direct CI/build evidence from the controlled build machine.
+
 Authoritative SableOS operating-system source composition and release-input provenance.
 
 This repository defines which exact upstream and Sable-owned revisions compose an OS build. When SableOS intentionally consumes independently built application APKs instead of rebuilding their external Gradle dependency graph inside AOSP, the provenance layer must also bind those exact trusted artifact inputs.
@@ -15,25 +29,22 @@ Organization-wide security, quality, test, coverage, supply-chain and performanc
 
 New validated builds must bind their actual current substrate/revisions; historical GrapheneOS `2026081300` and R5 migration identities remain evidence, not permanent current defaults.
 
-## Current R8 composition model
+## Current composition model
 
 ```text
-A1 disposable application qualification
+R8 application/design foundation + trusted artifact freeze
         |
         v
-A2 trusted standalone app build on ai-g732
+R9 Launcher3/Quickstep + Sable Start visual closure
         |
         v
-exact trusted application freeze
+fresh source-bound Panther full build
         |
         v
-B1 Android/Soong product integration
+physical Pixel 7 R9 acceptance
         |
         v
-B2 Panther development image/runtime
-        |
-        v
-B3 Titan 2 portability image/runtime
+Titan 2 keyboard-first portability/GSI qualification
 ```
 
 A complete build record must answer both:
