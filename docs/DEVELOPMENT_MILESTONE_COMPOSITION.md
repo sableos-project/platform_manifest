@@ -1,5 +1,8 @@
 # Development milestone source-composition requirements
 
+> **Current execution overlay — 2026-09-20:** R9 is the active milestone. The current Panther source substrate is GrapheneOS 2026081300 / Android 17 plus audited Sable deltas. R8 established the sealed first-party app/product foundation; R9 adds Launcher3/Quickstep-hosted Sable Start and requires fresh source-bound Panther output before physical acceptance.
+
+
 Status: **normative source/input composition policy for the current development train.**
 
 `platform_manifest` is the authority for Android/Sable source composition. R8 additionally permits trusted externally built application artifacts; those inputs must be bound by explicit provenance rather than hidden as local files.
