@@ -27,7 +27,7 @@ Organization-wide security, quality, test, coverage, supply-chain and performanc
 - Google Pixel 7 (`panther`) — PRIMARY development/runtime reference.
 - Titan 2 — active R8 PORTABILITY target after Panther acceptance.
 
-New validated builds must bind their actual current substrate/revisions; historical GrapheneOS `2026081300` and R5 migration identities remain evidence, not permanent current defaults.
+The active Panther R9 substrate is the exact signed GrapheneOS `2026081300` Android 17 release with audited Sable deltas. Future validated builds must still bind their exact manifest/source/artifact identities rather than relying on a mutable label.
 
 ## Current composition model
 
