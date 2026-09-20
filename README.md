@@ -25,7 +25,9 @@ Organization-wide security, quality, test, coverage, supply-chain and performanc
 ## Current reference targets
 
 - Google Pixel 7 (`panther`) — PRIMARY development/runtime reference.
-- Titan 2 — active R8 PORTABILITY target after Panther acceptance.
+- Titan 2 — keyboard-first N0 GSI portability target after Panther acceptance.
+- Titan 2 Elite — second keyboard-first N0 GSI candidate; independent bootloader/recovery/GSI proof required.
+- Zinwa Q27 — future integrated/full-QWERTY candidate after shipped-hardware qualification.
 
 The active Panther R9 substrate is the exact signed GrapheneOS `2026081300` Android 17 release with audited Sable deltas. Future validated builds must still bind their exact manifest/source/artifact identities rather than relying on a mutable label.
 
@@ -112,7 +114,7 @@ Mutable branch names, caches or unpinned third-party Actions are not sufficient 
 
 ## Dual-target rule
 
-Where compatible, Panther and Titan 2 should consume the same trusted common application artifacts and common `vendor_sable` composition with isolated target OUT_DIRs and bounded device adapters.
+Where compatible, Panther, Titan 2, Titan 2 Elite and later Q27 should consume the same trusted common application artifacts and common `vendor_sable` composition with isolated target OUT_DIRs and bounded device adapters.
 
 A Titan-specific display/keyboard adaptation does not justify a common application source fork.
 
