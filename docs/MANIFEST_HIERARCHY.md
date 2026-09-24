@@ -1,57 +1,61 @@
 # SableOS manifest hierarchy
 
-SableOS uses one common manifest layer plus device-specific manifest files. The manifest repository defines source composition; it does not own application, device, or build-tool implementation.
+Status: **current structural model — 2026-09-24**
 
-Recommended hierarchy:
+The manifest layer defines source composition. It does not own application,
+device or build-tool implementation.
 
-```text
-default.xml
-manifests/common/sable.xml
-manifests/devices/panther.xml
-manifests/devices/bramble.xml
-releases/panther/<release>.xml
-releases/bramble/<validation>.xml
-```
-
-## Roles
-
-`default.xml`
-- active development entry point;
-- includes the common Sable layer and the selected development target composition.
-
-`manifests/common/sable.xml`
-- Sable-owned projects shared across devices;
-- packages/apps/SableStart;
-- common Sable platform/services;
-- vendor/sable common integration.
-
-`manifests/devices/<target>.xml`
-- target-specific Sable adapter projects;
-- only device-specific repos required for that target;
-- no copies of common Sable applications or semantics.
-
-`releases/<target>/<id>.xml`
-- immutable or revision-pinned complete source composition for a validated build/release;
-- exact Sable project revisions;
-- exact upstream revisions or release tag binding;
-- target/support-level metadata recorded in adjacent documentation.
-
-## Composition rule
-
-Conceptually:
+Conceptual hierarchy:
 
 ```text
-upstream substrate
-    + common Sable manifest
-    + one device manifest
-    = development source tree
+default.xml / active development composition
+
+manifests/common/
+    common Sable platform/application projects
+
+manifests/devices/
+    panther.xml
+    titan2.xml             when real device-owned source exists
+    titan2-elite.xml       when independently justified
+    q27.xml                only after RESEARCH promotion
+
+releases/<device>/
+    exact revision-pinned validated compositions
 ```
 
-A validated build adds an exact revision-pinned release manifest.
+Do not create a device manifest merely because a device is being researched.
+Create one when there is actual source composition that belongs to that device.
 
-## Initial target model
+## Common layer
 
-- Panther: PRIMARY; GrapheneOS 2026081300 / Android 17 reference.
-- Bramble: future PORTABILITY profile; exact Android 16/LineageOS substrate to be qualified before manifest creation.
+The common layer may reference reusable Sable platform/application repositories,
+including the current standalone SableLauncher source once publication/migration
+is complete.
 
-The first Panther manifest is not considered validated until the organization-based multi-repository checkout reproduces the already-qualified SableStart build and subsequent runtime gates.
+Historical SableStart composition remains history; it is not the current HOME
+ownership model.
+
+## Device layer
+
+Device manifests contain only bounded target-specific integration such as
+product/device trees, overlays or vendor/BSP bindings that cannot remain common.
+
+## Release layer
+
+A validated release manifest pins exact revisions and must correspond to exact
+artifact/build evidence. Formal published release identities are immutable;
+corrections create a new identity.
+
+## Current roles
+
+```text
+panther       frozen accepted reference
+titan2        active N0 portability research
+titan2-elite  independent candidate
+q27           research
+```
+
+Bramble is historical reference only.
+
+The manifest hierarchy must not imply support that the runtime/evidence layer has
+not established.
