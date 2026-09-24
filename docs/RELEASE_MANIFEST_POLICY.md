@@ -1,108 +1,63 @@
 # Manifest and release provenance policy
 
-Status: **normative development/release-input provenance policy.**
+Status: **current normative policy — 2026-09-24**
 
-SableOS distinguishes moving development state, validated development-image inputs and later production release/signing state.
+## Exact identity
 
-## Development source composition
+Every validated build records exact source revisions. Development branches may
+move, but validation evidence resolves the exact commits it consumed.
 
-Development manifests may reference active branches while work is in progress. Every validation/build record still resolves the actual revisions it consumed.
+When independently built artifacts enter the product, source manifests alone are
+not complete provenance. Bind the exact artifact identity as well.
 
-Standalone application qualification may happen outside the Android source manifest. That is allowed only when the trusted artifact later consumed by the product is represented by exact source/toolchain/artifact provenance.
+## Artifact provenance
 
-## R8 trusted application input
-
-R8 has two application-build stages:
-
-```text
-A1 GitHub/disposable qualification
- -> A2 trusted standalone build on ai-g732
- -> exact trusted application freeze
-```
-
-A1 artifacts are evidence, not automatically trusted product binaries.
-
-For every A2-built application accepted into Panther/Titan 2 development images, bind at least:
+For each accepted external artifact record at least:
 
 ```text
 source repository + exact commit
-upstream/reuse source + exact commit where applicable
-trusted A2 build/toolchain/dependency identity
-application/package ID + version
-trusted APK SHA-256
-permissions/exported components
-classes*.dex identity
-JNI .so identity
-native ABI / 16 KiB compatibility
-product module/import + install path
-Soong signing/transformation behavior
+upstream pin if reused
+toolchain/build environment
+package/module identity
+artifact kind
+artifact hash(es)
+build evidence
 ```
 
-## Validated development-image composition
+K1 registry v2 recognizes multiple artifact kinds, including target-files,
+full-device images, GSI system images, system/product bundles and boot/recovery
+bundles.
 
-A validated development build binds:
+## Device/vendor basis
 
-```text
-exact upstream/substrate identity
-exact Sable source revisions
-exact target device/product/release/variant
-vendor/BSP/generated inputs
-exact trusted external application inputs
-build/toolchain/host identity
-isolated target OUT_DIR identity
-resulting artifact hashes
-validation record
-```
+Non-Pixel N0 artifacts must additionally identify the exact stock/vendor basis
+on which they rely when applicable. A Sable GSI plus stock vendor/firmware is
+not provenance-equivalent to a fully owned target-files build.
 
-A source manifest alone is not a complete input identity when sealed standalone APKs are consumed.
+## Panther
 
-## Panther and Titan 2
+Panther R9 is frozen reference evidence. Its accepted image remains bound to its
+exact source/artifact identity.
 
-Where compatible, the R8 Panther and Titan 2 development builds should consume the same frozen common app artifacts and common product integration. Device-specific differences are recorded as bounded target adapters/exceptions.
+## Titan family
 
-Each target retains separate build/output/runtime evidence.
+Titan 2 and Titan 2 Elite use independent source/vendor/firmware evidence.
+Common app/product revisions may match, but device-specific inputs and acceptance
+do not inherit across the family.
 
-## Production signing — deferred
+## Branches, tags and release manifests
 
-Production signing is not part of R8 development composition closure.
+- branches are mutable development references;
+- tags identify named source points;
+- revision-pinned manifests identify exact source compositions;
+- artifact records identify exact external/generated inputs;
+- physical evidence identifies actual runtime qualification.
 
-Only after Panther and Titan 2 development qualification is satisfactory should a release-signing workstream define production application keys, AVB hierarchy, OTA signing, `sign_target_files_apks`, key custody/backup/recovery/rotation, offline signing-host policy and signed-output provenance.
+No one layer substitutes for another.
 
-The ThinkPad P50 is a future signing-host candidate only. OptiPlex is not part of the current signing plan. No host should be called `sable-signer-01` until commissioned.
+## Production signing
 
-Development/test signing identity used for engineering images is recorded separately and must not be presented as production signing provenance.
-
-## Formal release manifests
-
-A future formal release manifest/provenance definition is immutable after publication. Corrections produce a new release identity rather than rewriting an existing validated definition.
-
-Historical input records remain available even after an application/source implementation is replaced.
-
-## Branches, tags, manifests and artifacts
-
-- branches represent moving development;
-- protected/signed tags may identify component milestones;
-- revision-pinned manifests identify OS source compositions;
-- sealed artifact records identify exact trusted external build inputs;
-- development-image records bind source/artifacts/host/target/runtime evidence;
-- future release records additionally bind production signing/update outputs.
-
-A branch name, package name or filename alone is never sufficient provenance.
-
-## Build-host transition
-
-R8 trusted application and Android development builds move to `ai-g732` after storage/source/toolchain migration is sealed. The host transition does not change source ownership; it becomes part of the build-environment identity.
-
-Do not carry host-private ThinkPad paths/local copies into validated build provenance.
-
-## Governing questions
-
-For a development image:
-
-> Which exact source revisions, trusted external inputs, build environment and product target produced this exact image?
-
-For a future production release:
-
-> Which exact approved development/release candidate plus production signing identities produced this exact released artifact?
-
-If either answer depends on an untracked developer workspace, provenance is incomplete.
+Production application keys, AVB signing hierarchy, OTA signing/update service,
+key custody and signed-output provenance remain a later program. Development
+provenance must already be sufficient to answer which approved source/artifacts
+produced a candidate before production signing is introduced.
