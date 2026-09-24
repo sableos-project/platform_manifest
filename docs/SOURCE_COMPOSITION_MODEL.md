@@ -1,63 +1,52 @@
-# Source and build-input composition model
+# SableOS source composition model
 
-Status: **normative composition architecture.**
+Status: **current normative model — 2026-09-24**
 
-SableOS is assembled from an Android upstream substrate, Sable-owned source repositories, vendor/BSP inputs, and—where intentionally chosen—exact independently qualified application artifacts. The composition layer records what the build consumes; it does not absorb ownership from the repositories/workflows that produced those inputs.
+SableOS is assembled from an Android substrate, Sable-owned source repositories,
+vendor/BSP inputs and—where deliberately chosen—exact independently qualified
+application/artifact inputs.
 
-## Layers
+## Composition classes
 
-1. **Upstream Android substrate** — GrapheneOS/AOSP/LineageOS or another explicitly qualified base.
-2. **Sable common source** — shared platform contracts, Sable Start and other source-built common components.
-3. **Qualified standalone application inputs** — exact sealed APK/native artifacts whose canonical build graph remains Cargo/Gradle/upstream-owned.
-4. **Common product integration** — `vendor_sable` product selection/import rules.
-5. **Device adapters** — only target-specific integration that cannot remain common.
-6. **External vendor/BSP inputs** — versioned/hash-bound when normal source redistribution is not available.
-7. **Build tooling** — host-side assembly/build/reconstruction/evidence tooling.
+1. **Android substrate** — AOSP/GrapheneOS/LineageOS or another qualified base.
+2. **Sable-owned source** — common product/platform/apps plus bounded device adapters.
+3. **Vendor/BSP inputs** — device kernel/vendor/ODM/firmware dependencies.
+4. **Qualified external artifacts** — exact sealed APK/native/image inputs.
 
-## Source project identity
+The composition layer records inputs; it does not absorb ownership from the
+repositories/workflows that produced them.
 
-For every source project that participates in the OS tree, record the exact project/revision and checkout path through the appropriate manifest/provenance mechanism.
-
-Do not rely on branch names, copied source, host-only symlinks or untracked local manifests for validated/release composition.
-
-## Qualified external application identity
-
-If the image consumes a standalone-qualified APK, record at least:
+## Current product roles
 
 ```text
-source repository + commit
-upstream/reuse repository + commit where applicable
-qualification workflow/run
-APK SHA-256
-package/application ID + version
-permissions/components
-native ABI/library inventory
-dependency/provenance inventory
-product module/import
-install partition/path
-signing/transformation model
+panther       REFERENCE_FROZEN / Android 17 accepted reference
+titan2        PORTABILITY / N0 active research
+titan2-elite  PORTABILITY candidate / independent proof
+q27           RESEARCH
+bramble       historical reference
 ```
 
-The artifact record complements source composition; it does not pretend the APK was rebuilt inside AOSP.
+No current PRIMARY device is declared.
 
-## Product integration principle
+## Current HOME boundary
 
-A qualified application becomes a SableOS product input only after its exact import/module semantics, product selection and install/image path are proven in the target Android tree.
+`org.sableos.launcher` / SableLauncher owns HOME.
+Launcher3QuickStep owns Recents/Overview/task/gesture substrate only.
+Historical SableStart composition is not the current product HOME model.
 
-`android_app_import` is currently a candidate mechanism, not a composition guarantee.
+## Artifact composition
 
-## Device principle
+K1 registry v2 separates artifact identity from device-contact identity.
+Artifact records can represent target-files, full images, GSI/system images,
+system/product bundles or boot/recovery bundles.
 
-A new device reuses common Sable source and qualified application inputs unless a target-specific difference is technically required. Device repositories are adapters, not complete OS/app forks.
+A physical serial is not source/artifact composition.
 
-## Current target roles
+## Validation
 
-- `panther`: PRIMARY Android 17 / GrapheneOS-derived product-development reference.
-- `bramble`: future legacy-hardware portability/regression target, not a current production-security claim.
-- MediaTek/QWERTY targets: future portability/research axis after common boundaries are stable.
+A composition is validated only when recorded source and artifact inputs can
+produce/integrate the intended tree and pass the relevant build/product/runtime
+gates.
 
-## Validation principle
-
-A composition becomes a validated build definition only when the recorded source and external artifact inputs can reconstruct/integrate the intended tree and pass the corresponding build/product/runtime gates.
-
-A successful historical workspace build does not by itself prove the current composition. A standalone APK qualification PASS does not by itself prove product/image integration.
+A successful historical workspace build, standalone APK qualification or generic
+GSI boot is never sufficient by itself to claim current product qualification.
