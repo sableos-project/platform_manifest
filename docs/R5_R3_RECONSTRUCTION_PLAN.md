@@ -1,6 +1,9 @@
 # R5-R3 — Panther clean manifest reconstruction plan
 
-Status: **normative plan; manifest integration and reconstruction execution are not yet closed.**
+> **HISTORICAL R5 RECONSTRUCTION RECORD — 2026-09-24 classification:** retained unchanged as evidence of the early SableStart/manifest migration problem. It is not the current reconstruction plan. Current HOME is standalone SableLauncher, Panther is frozen, and current composition policy is defined by this repository's other docs plus the organization current-status documents.
+
+
+Status: **HISTORICAL_EVIDENCE / SUPERSEDED EXECUTION PLAN.**
 
 This document records the R5-R3 audit result and the exact acceptance boundary for moving from the successful R5-R2 direct migrated-checkout build to a normal `repo`-managed reconstruction.
 
