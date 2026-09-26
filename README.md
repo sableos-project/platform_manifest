@@ -1,6 +1,6 @@
 # SableOS Platform Manifest
 
-Status: **current composition authority — 2026-09-25**
+Status: **current composition authority — 2026-09-26**
 
 Pixel 7 / Panther R9 is physically accepted and frozen as the touch-first
 reference after the final Sable Hub V1 closure. Active development is now the
@@ -8,7 +8,7 @@ common keyboard-first/Titan portability line.
 
 ```text
 panther       REFERENCE_FROZEN / accepted R9 Hub V1 image
-titan2        PORTABILITY / N0 active research
+titan2        N0_PLACEHOLDER / adapter + artifact decision pending / fail-closed
 titan2-elite  PORTABILITY candidate / independent baseline required
 q27           RESEARCH / future candidate
 ```
@@ -20,6 +20,8 @@ R9_PANTHER_ACCEPTED_SOURCE=edf62e5bb08372a1395841d6cc5d78d3148a7695
 R9_PANTHER_TARGET_FILES_SHA256=a0b359613c4f30e9a834fba212e0b044a97d63ed0537c59471c31b99b627d285
 R9_PANTHER_HUB_V1_CLOSURE=MERGED_PR_110
 R10_KEYBOARD_FIRST_DESIGN_V1=MERGED_PR_108
+PUBLIC_BUILD_FOUNDATION=MERGED
+PUBLIC_BUILD_SELF_TEST=MERGED
 ```
 
 This repository owns exact OS source composition and trusted external-artifact
@@ -52,6 +54,10 @@ boot-recovery-bundle
 Panther R9 uses the qualified target-files/full-image path. Titan-family N0 may
 bind a Sable GSI/system artifact to an exact stock kernel/vendor/ODM/firmware
 basis. Those are different claims and must not be mislabeled.
+
+Titan 2 N0 is currently a composition placeholder only. See
+[`docs/TITAN2_N0_COMPOSITION_PLACEHOLDER.md`](docs/TITAN2_N0_COMPOSITION_PLACEHOLDER.md).
+No public Titan 2 `build-image`, signing or flash path is enabled.
 
 ## Repository roles
 
