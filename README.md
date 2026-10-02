@@ -1,6 +1,6 @@
 # SableOS Platform Manifest
 
-Status: **current composition authority — 2026-09-26**
+Status: **current composition authority — 2026-10-02**
 
 Pixel 7 / Panther R9 is physically accepted and frozen as the touch-first
 reference after the final Sable Hub V1 closure. Active development is now split
@@ -8,7 +8,7 @@ between the Pixel reference lane and the keyboard-first/Treble portability lane.
 
 ```text
 panther       REFERENCE_FROZEN / accepted R9 Hub V1 image
-titan2        N0_A16 / Treble portability lane / build target strategy pending
+titan2        N1D/C3B active engineering / public build+flash still fail-closed
 titan2-elite  PORTABILITY candidate / independent baseline required
 q27           RESEARCH / future candidate
 ```
@@ -40,16 +40,17 @@ PIXEL_REFERENCE_LANE
   Claim: strongest Sable reference image
 
 TREBLE_PORTABILITY_LANE
-  Devices: Titan 2, Titan 2 Elite, Q27 and future Unihertz/MediaTek targets
-  Substrate: stock-vendor-compatible AOSP/Treble userspace
-  Artifact class: gsi-system-image first, then bounded system/product/system_ext only if proven
-  Claim: portable Sable userspace on preserved vendor/kernel/firmware
+  Devices: Titan 2 first; Titan 2 Elite independently; Q27 future research
+  Substrate: Graphene/AOSP-derived Sable userspace plus bounded Treble compatibility
+  Artifact class: systemimage/GSI engineering first; later bounded product/system_ext only if proven
+  Claim: portable Sable userspace on preserved vendor/kernel/firmware, not production security ownership
 ```
 
 Titan-family builds must not be forced to track the latest Pixel Android release
-before vendor/kernel/HAL compatibility is proven. For Titan 2 N0 the first
-planned identity is `TITAN2_N0_A16`: Android 16 / SDK 36 / stock-vendor-bound /
-GSI-first.
+before vendor/kernel/HAL compatibility is proven. The current Titan 2 canonical
+engineering lane is N1D/C3B on Android 16 / SDK 36, with a Graphene/AOSP base,
+minimal Treble scaffold and a fail-closed compatibility-peel process. The full
+RestlessOS runtime stack is not the Sable product baseline.
 
 See [`docs/TREBLE_PORTABILITY_STRATEGY.md`](docs/TREBLE_PORTABILITY_STRATEGY.md).
 
@@ -76,12 +77,13 @@ system-product-bundle
 boot-recovery-bundle
 ```
 
-Panther R9 uses the qualified target-files/full-image path. Titan-family N0 may
-bind a Sable GSI/system artifact to an exact stock kernel/vendor/ODM/firmware
+Panther R9 uses the qualified target-files/full-image path. Titan 2 N1D/C3B may
+bind a Sable systemimage/GSI engineering artifact to an exact stock kernel/vendor/ODM/firmware
 basis. Those are different claims and must not be mislabeled.
 
-Titan 2 N0 is currently moving from placeholder to strategy-bound build-target
-work. No public Titan 2 `build-image`, signing or flash path is enabled.
+Titan 2 N0 is retained as historical precursor documentation. Current canonical
+engineering is N1D/C3B; no public Titan 2 `build-image`, signing or flash path is
+enabled until that lane publishes and qualifies a public composition contract.
 
 ## Repository roles
 
@@ -90,7 +92,7 @@ work. No public Titan 2 `build-image`, signing or flash path is enabled.
 - `vendor_sable` — common product composition.
 - `device_sable_<target>` — bounded device adaptation.
 - `build` — CI/build/artifact/deployment contracts.
-- `treble_restlessos` — planned upstream-tracking RestlessOS fork for common Treble work, tracked by issue #8.
+- `treble_restlessos` — compatibility/reference fork; useful for known-fix discovery, not Sable runtime/product authority.
 - application repositories — implementation/tests/dependencies.
 
 ## Current product composition note
