@@ -1,6 +1,11 @@
 # Titan 2 N0 composition placeholder
 
-Status: **placeholder only — 2026-09-26**
+Status: **historical N0 placeholder — superseded for active engineering by N1D/C3B on 2026-10-02**
+
+> Current authority: Titan 2 active engineering has moved to the canonical
+> **N1D/C3B** lane. This file is preserved to explain the earlier N0 composition
+> decision and its fail-closed publication gates. It must not be used as current
+> execution authority.
 
 This document creates the public composition placeholder for the first bounded
 Titan 2 SableOS N0 experiment. It does not enable a public build, signing flow,
@@ -11,7 +16,7 @@ DEVICE=titan2
 RELEASE=N0
 COMPOSITION_STATUS=PLACEHOLDER_ONLY
 PUBLIC_DEVICE_REPO=sableos-project/device_sable_titan2
-PUBLIC_DEVICE_REPO_STATUS=ABSENT
+PUBLIC_DEVICE_REPO_STATUS=PRESENT
 PRIVATE_INTEGRATION_SKELETON=EXPECTED
 BUILD_IMAGE_PUBLIC=NO
 SIGNING_PUBLIC=NO
@@ -120,4 +125,7 @@ First E3/N0 deployment may begin only after:
 6. destructive-data behavior is explicit; and
 7. the deployment adapter rejects unsupported artifact kinds.
 
-Until then, Titan 2 N0 remains a composition placeholder, not a build target.
+That statement describes the historical N0 lane. Current N1D/C3B engineering
+remains private/canonical until a separately qualified public composition record
+is published; this historical placeholder does not authorize public build or
+flash.
