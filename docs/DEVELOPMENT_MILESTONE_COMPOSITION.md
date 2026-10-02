@@ -1,6 +1,6 @@
 # Development milestone composition
 
-Status: **current normative composition policy — 2026-09-24**
+Status: **current normative composition policy — 2026-10-02**
 
 ## Current baseline
 
@@ -15,9 +15,9 @@ common Sable source + qualified artifacts
         |
         +-- Panther frozen target-files reference
         |
-        +-- Titan 2 future N0 GSI/system composition
+        +-- Titan 2 active N1D/C3B systemimage/GSI engineering composition
         |
-        +-- Titan 2 Elite independent N0 composition
+        +-- Titan 2 Elite independent future composition
         |
         +-- Q27 research only
 ```
@@ -58,7 +58,7 @@ system-product-bundle
 boot-recovery-bundle
 ```
 
-A Titan N0 GSI record also binds the exact stock/vendor basis it expects.
+A Titan N1D/C3B systemimage/GSI record also binds the exact stock/vendor basis it expects.
 
 ## Device composition
 
@@ -70,8 +70,10 @@ sources automatically.
 
 ### Titan 2
 
-PORTABILITY/N0 active research. Initial Sable work should preserve stock
-kernel/vendor/ODM/firmware unless evidence requires otherwise.
+N1D/C3B active engineering integration. Preserve the qualified stock
+kernel/vendor/ODM/firmware boundary while the Graphene/AOSP-derived Sable
+userspace and minimal Treble compatibility peel are built and qualified.
+RestlessOS remains a compatibility reference, not the product runtime baseline.
 
 ### Titan 2 Elite
 
@@ -84,9 +86,16 @@ RESEARCH only until shipped-hardware evidence supports promotion.
 
 ## Launcher composition
 
-SableLauncher is the current Sable HOME product. Launcher3QuickStep is retained
-for Recents/Overview/task/gesture substrate and is not HOME eligible.
-SableStart is historical presentation/source context.
+Launcher3/Launcher3QuickStep is the canonical Sable first-party HOME runtime,
+Recents/Overview/task/gesture substrate and host for Sable Start
+presentation/state source.
+
+Standalone SableLauncher is retired from the current product architecture.
+
+```text
+THIRD_PARTY_HOME_SELECTION_ALLOWED=YES
+FORCE_SABLE_HOME_AFTER_USER_SELECTION=NO
+```
 
 ## Release closure
 
