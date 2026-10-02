@@ -1,6 +1,6 @@
 # SableOS source composition model
 
-Status: **current normative model — 2026-09-24**
+Status: **current normative model — 2026-10-02**
 
 SableOS is assembled from an Android substrate, Sable-owned source repositories,
 vendor/BSP inputs and—where deliberately chosen—exact independently qualified
@@ -20,7 +20,7 @@ repositories/workflows that produced them.
 
 ```text
 panther       REFERENCE_FROZEN / Android 17 accepted reference
-titan2        PORTABILITY / N0 active research
+titan2        N1D/C3B active engineering integration
 titan2-elite  PORTABILITY candidate / independent proof
 q27           RESEARCH
 bramble       historical reference
@@ -30,9 +30,20 @@ No current PRIMARY device is declared.
 
 ## Current HOME boundary
 
-`org.sableos.launcher` / SableLauncher owns HOME.
-Launcher3QuickStep owns Recents/Overview/task/gesture substrate only.
-Historical SableStart composition is not the current product HOME model.
+Launcher3/Launcher3QuickStep is the canonical **Sable first-party HOME runtime**
+and Recents/Overview/task/gesture substrate. It hosts Sable Start
+presentation/state source.
+
+Standalone `org.sableos.launcher` / SableLauncher is retired from the current
+product architecture.
+
+```text
+THIRD_PARTY_HOME_SELECTION_ALLOWED=YES
+FORCE_SABLE_HOME_AFTER_USER_SELECTION=NO
+```
+
+Manifest composition records Sable first-party defaults; it must not reinterpret
+a user's later Android HOME selection as a composition change.
 
 ## Artifact composition
 
