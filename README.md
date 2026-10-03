@@ -8,7 +8,7 @@ between the Pixel reference lane and the keyboard-first/Treble portability lane.
 
 ```text
 panther       REFERENCE_FROZEN / accepted R9 Hub V1 image
-titan2        N1D/C3B active engineering / public build+flash still fail-closed
+titan2        N1D/C3B E3 active build engineering / public build+flash still fail-closed
 titan2-elite  PORTABILITY candidate / independent baseline required
 q27           RESEARCH / future candidate
 ```
@@ -53,6 +53,25 @@ minimal Treble scaffold and a fail-closed compatibility-peel process. The full
 RestlessOS runtime stack is not the Sable product baseline.
 
 See [`docs/TREBLE_PORTABILITY_STRATEGY.md`](docs/TREBLE_PORTABILITY_STRATEGY.md).
+
+## Titan 2 C3B checkpoint
+
+Current private integration authority is `aimindseye/sableos@26d11bed93ef4eab924fc63100113bd94e8ae88b`.
+The first Sable-composed Titan 2 E3 image is being built from
+`caf98dde723d07a071d95aaa1ef27d578d3208d8`.
+
+```text
+C3B_E1_SYSTEMIMAGE=PASS
+C3B_E2_SOURCE_ADMISSION=PASS
+C3B_E3_STATUS=BUILD_RUNNING_NOT_YET_SEALED
+C3B_RUNTIME_PATCH_ALLOWLIST_COUNT=0
+PUBLIC_TITAN_BUILD_IMAGE=NO
+PUBLIC_TITAN_FLASH=NO
+```
+
+Parallel product work is P1-P4 (Sable Start, Keyboard provisioning,
+SetupWizard2 integration preparation, Weather closure) with one batched
+ai-g732 qualification after P4. P5 Sable Reader v2 remains design/scope work.
 
 ## Composition record
 
